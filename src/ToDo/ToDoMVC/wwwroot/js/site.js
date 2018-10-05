@@ -51,16 +51,51 @@ $(document).ready(function () {
         ev.target.disabled = true;
         postError.hide();
 
-        $("#edit-item-modal").modal('show');
+        $title = $("#edit-item-title");
+        $dueAt = $("#edit-item-due-at");
+        $id = $("#edit-item-id");
+        $modal = $("#edit-item-modal");
 
+        $("#edit-item-modal").modal('show');
+        //console.log("id sendo enviado: " + ev.target.name);
         $.post('/ToDo/GetItem', {
             id: ev.target.name
         },
             function (item) {
-                $("#edit-item-title").val(item.title);
-                $("#edit-item-due-at").val(item.dueAt);
-                $("#edit-item-id").val(item.id);
-                $("#edit-item-modal").modal('show');
+                $title.val(item.title);
+                //console.log("Titulo: " + item.title);
+                $due = item.dueAt.split('T', 1);
+                $dueAt.val($due);
+
+                //console.log("Data: " + item.dueAt);
+                $id.val(item.id);
+                //console.log("ID: " + item.id);
+                $modal.modal('show');
+
+                $(".closemodal").on('click', function () {
+                    ev.target.disabled = false;
+                });
+
+                $("#save").on('click', function () {
+                    console.log("clicou em salvar");
+                    console.log("data: " + $due[0]);
+                    $.post(
+                        '/ToDo/SaveEdit',
+                        {
+                            id: $id.val(),
+                            title: $title.val(),
+                            dueAt: $dueAt.val()
+                        }
+                    )
+                    .success(function () {
+                        $modal.modal('hide');
+                        ev.target.disabled = false;
+                        window.location = '/ToDo';
+                    })
+                    .fail(postError.onError);
+                });
+
+
             }
         ).fail(postError.onError);
     }

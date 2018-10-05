@@ -50,5 +50,24 @@ namespace ToDoMvc.Services
             var saveResult = await _context.SaveChangesAsync();
             return saveResult == 1;
         }
+
+        public async Task<ToDoItem> GetItemAsync(Guid id)
+        {
+            return await _context.Items.FirstOrDefaultAsync(i => i.Id == id);
+            
+        }
+        public async Task<bool> SaveEditItemAsync(ToDoItem todo)
+        {
+            var entity = new ToDoItem
+            {
+                Id = todo.Id,
+                IsDone = todo.IsDone,
+                Title = todo.Title,
+                DueAt = todo.DueAt
+            };
+            _context.Items.Update(entity);
+            var saveResult = await _context.SaveChangesAsync();
+            return saveResult == 1;
+        }
     }
 }
