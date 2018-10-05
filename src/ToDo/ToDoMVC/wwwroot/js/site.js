@@ -2,6 +2,8 @@
 $(document).ready(function () {
     $('#add-item-button').on('click', addItem());
     $('.done').on('click', markDone);
+    $('.edit').on('click', editItem);
+    $('.delete').on('click', deleteItem);
 
     var postError = (function () {
         var $itemError = $('#add-item-error');
@@ -45,7 +47,25 @@ $(document).ready(function () {
         ).fail(postError.onError);
     }
 
-    function editItem() {
+    function editItem(ev) {
+        ev.target.disabled = true;
+        postError.hide();
+
+        $("#edit-item-modal").modal('show');
+
+        $.post('/ToDo/GetItem', {
+            id: ev.target.name
+        },
+            function (item) {
+                $("#edit-item-title").val(item.title);
+                $("#edit-item-due-at").val(item.dueAt);
+                $("#edit-item-id").val(item.id);
+                $("#edit-item-modal").modal('show');
+            }
+        ).fail(postError.onError);
+    }
+
+    function deleteItem() {
 
     }
 
