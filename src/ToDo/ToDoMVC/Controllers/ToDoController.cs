@@ -26,7 +26,8 @@ namespace ToDoMvc.Controllers
             var vm = new ToDoViewModel()
             {
                 Items = await _toDoItemService.GetIncompleteItemsAsync()
-            };
+				
+			};
 
             return View(vm);
 
